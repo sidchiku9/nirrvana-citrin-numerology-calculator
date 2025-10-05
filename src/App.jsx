@@ -70,104 +70,70 @@ function App() {
   }, [gender, year]);
 
   useEffect(() => {
-    const firstName = name ? name.split(' ')[0] : '';
-    const secondName = name ? name.split(' ')[1] : '';
+    const trimmedName = name ? name.trim() : '';
+    const nameParts = trimmedName.split(/\s+/);
+    const firstName = nameParts[0] || '';
 
-    if(!firstName && !secondName){
-      setSu(0);
-      setSs(0);
-      setFn(0);
-      setExp(0);
-      return;
+    // First Name Calculation (fn, fnTotal)
+    const firstNameSum = firstName.split('').reduce((acc, curr) => {
+      const upperCase = curr.toUpperCase();
+      if (upperCase >= 'A' && upperCase <= 'Z') {
+        return acc + (chaldeanLetterValues[upperCase] || 0);
+      }
+      return acc;
+    }, 0);
+    setFnTotal(firstNameSum);
+    if (firstNameSum > 9) {
+      const reduceSum = firstNameSum.toString().split('').reduce((acc, curr) => acc + Number(curr), 0);
+      setFn(reduceSum);
+    } else {
+      setFn(firstNameSum);
     }
 
-    if(firstName && !secondName){
-
-      const soulUrgeSum = firstName.split('').reduce((acc, curr) => {
-        const upperChar = curr.toUpperCase();
-        if(['A', 'E', 'I', 'O', 'U'].includes(upperChar)) {
-          return acc + (chaldeanLetterValues[upperChar] || 0);
-        }
-        return acc;
-      }, 0);
-      if(soulUrgeSum > 9) {
-        const reducedSu = soulUrgeSum.toString().split('').reduce((acc, curr) => acc + Number(curr), 0);
-        setSu(reducedSu);
-      } else {
-        setSu(soulUrgeSum);
+    // Expression Calculation (expressionTotal, exp) - always use full name
+    const expressionSum = trimmedName.split('').reduce((acc, curr) => {
+      const upperCase = curr.toUpperCase();
+      if (upperCase >= 'A' && upperCase <= 'Z') {
+        return acc + (chaldeanLetterValues[upperCase] || 0);
       }
+      return acc;
+    }, 0);
+    setExpTotal(expressionSum);
+    if (expressionSum > 9) {
+      const reduceExp = expressionSum.toString().split('').reduce((acc, curr) => acc + Number(curr), 0);
+      setExp(reduceExp);
+    } else {
+      setExp(expressionSum);
+    }
 
-      const secretSelfSum = firstName.split('').reduce((acc, curr) => {
-        const upperChar = curr.toUpperCase();
-        if(!['A', 'E', 'I', 'O', 'U'].includes(upperChar) && (upperChar >= 'A' && upperChar <= 'Z')) {
-          return acc + (chaldeanLetterValues[upperChar] || 0);
-        }
-        return acc;
-      }, 0);
-      if(secretSelfSum > 9) {
-        const reducedSs = secretSelfSum.toString().split('').reduce((acc, curr) => acc + Number(curr), 0);
-        setSs(reducedSs);
-      } else {
-        setSs(secretSelfSum);
+    // Soul Urge and Secret Self - you can decide if you want to use full name or just first name
+    // Here, using full name:
+    const soulUrgeSum = trimmedName.split('').reduce((acc, curr) => {
+      const upperChar = curr.toUpperCase();
+      if (['A', 'E', 'I', 'O', 'U'].includes(upperChar)) {
+        return acc + (chaldeanLetterValues[upperChar] || 0);
       }
+      return acc;
+    }, 0);
+    if (soulUrgeSum > 9) {
+      const reducedSu = soulUrgeSum.toString().split('').reduce((acc, curr) => acc + Number(curr), 0);
+      setSu(reducedSu);
+    } else {
+      setSu(soulUrgeSum);
+    }
 
-      const firstNameSum = firstName.split('').reduce((acc, curr) => {
-        const upperCase = curr.toUpperCase();
-        if(upperCase >= 'A' && upperCase <= 'Z'){
-          return acc + (chaldeanLetterValues[upperCase] || 0);
-        }
-        return acc;
-      }, 0);
-
-      if(firstNameSum > 9){
-        setFnTotal(firstNameSum);
-        const reduceSum = firstNameSum.toString().split('').reduce((acc, curr) => acc + Number(curr) ,0);
-        setFn(reduceSum);
+    const secretSelfSum = trimmedName.split('').reduce((acc, curr) => {
+      const upperChar = curr.toUpperCase();
+      if (!['A', 'E', 'I', 'O', 'U'].includes(upperChar) && (upperChar >= 'A' && upperChar <= 'Z')) {
+        return acc + (chaldeanLetterValues[upperChar] || 0);
       }
-  } else if(firstName && secondName){
-    const soulUrgeSum = (firstName + secondName).split('').reduce((acc, curr) => {
-        const upperChar = curr.toUpperCase();
-        if(['A', 'E', 'I', 'O', 'U'].includes(upperChar)) {
-          return acc + (chaldeanLetterValues[upperChar] || 0);
-        }
-        return acc;
-      }, 0);
-      if(soulUrgeSum > 9) {
-        const reducedSu = soulUrgeSum.toString().split('').reduce((acc, curr) => acc + Number(curr), 0);
-        setSu(reducedSu);
-      } else {
-        setSu(soulUrgeSum);
-      }
-
-      const secretSelfSum = (firstName + secondName).split('').reduce((acc, curr) => {
-        const upperChar = curr.toUpperCase();
-        if(!['A', 'E', 'I', 'O', 'U'].includes(upperChar) && (upperChar >= 'A' && upperChar <= 'Z')) {
-          return acc + (chaldeanLetterValues[upperChar] || 0);
-        }
-        return acc;
-      }, 0);
-      if(secretSelfSum > 9) {
-        const reducedSs = secretSelfSum.toString().split('').reduce((acc, curr) => acc + Number(curr), 0);
-        setSs(reducedSs);
-      } else {
-        setSs(secretSelfSum);
-      }
-
-      const expressionSum = (firstName + secondName).split('').reduce((acc, curr) => {
-        const upperCase = curr.toUpperCase();
-        if(upperCase >= 'A' && upperCase <= 'Z'){
-          return acc + (chaldeanLetterValues[upperCase] || 0);
-        }
-        return acc;
-      }, 0);
-
-      if(expressionSum > 9){
-        setExpTotal(expressionSum);
-        const reduceExp = expressionSum.toString().split('').reduce((acc, curr) => acc + Number(curr) ,0);
-        setExp(reduceExp);
-      } else {
-        setExp(expressionSum);
-      }
+      return acc;
+    }, 0);
+    if (secretSelfSum > 9) {
+      const reducedSs = secretSelfSum.toString().split('').reduce((acc, curr) => acc + Number(curr), 0);
+      setSs(reducedSs);
+    } else {
+      setSs(secretSelfSum);
     }
   }, [name])
 
@@ -203,8 +169,6 @@ function App() {
   existingReports.push(report);
   localStorage.setItem('numerologyReport', JSON.stringify(existingReports));
   setRefresh(!refresh);
-  
-  alert('Report saved to session storage!');
   }
 
   return (
@@ -238,7 +202,7 @@ function App() {
           <button type="button" className="flex-1 py-2 bg-green-700 text-white rounded-lg font-semibold shadow active:bg-green-800" onClick={saveToCookie}>
             Save Report
           </button>
-          <button type="button" className="flex-1 py-2 bg-yellow-700 text-white rounded-lg font-semibold shadow active:bg-yellow-800" onClick={() => localStorage.clear()}>
+          <button type="button" className="flex-1 py-2 bg-yellow-700 text-white rounded-lg font-semibold shadow active:bg-yellow-800" onClick={() => {localStorage.clear(); window.location.reload();}}>
             Clear All
           </button>
         </div>
