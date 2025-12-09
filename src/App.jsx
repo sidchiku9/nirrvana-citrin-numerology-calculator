@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import React from 'react';
 import SavedUser from './components/SavedUser';
+import LoshoGrid from './components/LoshoGrid';
 
 function App() {
   const [date, setDate] = useState();
@@ -223,6 +224,9 @@ function App() {
         :
         <div className="text-center text-gray-500 py-4">No saved names found.</div>
       }
+    </div>
+    <div>
+      <LoshoGrid />
     </div>
   </div>
   )
