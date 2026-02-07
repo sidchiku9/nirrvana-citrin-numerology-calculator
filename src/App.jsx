@@ -3,6 +3,7 @@ import './App.css'
 import React from 'react';
 import SavedUser from './components/SavedUser';
 import LoshoGrid from './components/LoshoGrid';
+import ReportEditor from './components/ReportEditor';
 import {
   calculateBirthDate,
   calculateLifePath,
@@ -80,7 +81,8 @@ const NumberMeaning = ({ number, onClose }) => {
   );
 };
 
-function App() {
+// Calculator Page Component
+const CalculatorPage = () => {
   const [date, setDate] = useState('');
   const [month, setMonth] = useState('');
   const [year, setYear] = useState('');
@@ -88,11 +90,8 @@ function App() {
   const [gender, setGender] = useState('');
   const [refresh, setRefresh] = useState(false);
   const [selectedNumber, setSelectedNumber] = useState(null);
-
-  // Input validation state
   const [errors, setErrors] = useState({});
 
-  // Validate inputs
   const handleDateChange = (value) => {
     setDate(value);
     if (value && !validateDate(value)) {
@@ -120,7 +119,6 @@ function App() {
     }
   };
 
-  // Calculate all numbers using memoization
   const bd = useMemo(() => calculateBirthDate(date), [date]);
   const lp = useMemo(() => calculateLifePath(date, month, year), [date, month, year]);
   const kua = useMemo(() => calculateKua(year, gender), [year, gender]);
@@ -172,22 +170,7 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen gradient-mystic relative overflow-hidden">
-      {/* Decorative stars background */}
-      <div className="stars-bg">
-        {[...Array(50)].map((_, i) => (
-          <div
-            key={i}
-            className="star"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`
-            }}
-          />
-        ))}
-      </div>
-
+    <>
       <div className="relative z-10 flex flex-col items-center px-4 py-6 min-h-screen">
         {/* Header */}
         <header className="w-full max-w-lg mx-auto mb-6">
@@ -205,7 +188,6 @@ function App() {
         <main className="w-full max-w-lg mx-auto mb-6">
           <div className="card-mystic p-6">
             <form className="flex flex-col gap-5">
-              {/* Date of Birth */}
               <div className="space-y-2">
                 <label className="block text-sm font-semibold text-purple-800">
                   Date of Birth
@@ -250,7 +232,6 @@ function App() {
                 </div>
               </div>
 
-              {/* Name */}
               <div className="space-y-2">
                 <label className="block text-sm font-semibold text-purple-800">
                   Full Name
@@ -264,7 +245,6 @@ function App() {
                 />
               </div>
 
-              {/* Gender */}
               <div className="space-y-2">
                 <label className="block text-sm font-semibold text-purple-800">
                   Gender (for KUA number)
@@ -280,7 +260,6 @@ function App() {
                 </select>
               </div>
 
-              {/* Buttons */}
               <div className="flex gap-3 mt-2">
                 <button
                   type="button"
@@ -299,13 +278,11 @@ function App() {
               </div>
             </form>
 
-            {/* Results Grid */}
             <div className="mt-6 pt-6 border-t border-purple-100">
               <h2 className="text-lg font-semibold text-purple-800 mb-4 text-center">
                 Your Numerology Profile
               </h2>
 
-              {/* Primary Numbers */}
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
                 <div onClick={() => bd && setSelectedNumber(bd)} className="cursor-pointer">
                   <NumberCard label="Birth Date" value={bd} />
@@ -318,7 +295,6 @@ function App() {
                 </div>
               </div>
 
-              {/* Name Numbers */}
               <div className="grid grid-cols-2 gap-3">
                 <div onClick={() => nameNumbers.su && setSelectedNumber(nameNumbers.su)} className="cursor-pointer">
                   <NumberCard label="Soul Urge" value={nameNumbers.su} />
@@ -341,7 +317,6 @@ function App() {
           </div>
         </main>
 
-        {/* Saved Users Section */}
         <section className="w-full max-w-lg mx-auto mb-6">
           {localStorage.getItem('numerologyReport') ? (
             <SavedUser props={refresh} />
@@ -352,16 +327,62 @@ function App() {
           )}
         </section>
 
-        {/* Lo Shu Grid Section */}
         <section className="w-full max-w-lg mx-auto">
           <LoshoGrid />
         </section>
       </div>
 
-      {/* Number Meaning Modal */}
       {selectedNumber && (
         <NumberMeaning number={selectedNumber} onClose={() => setSelectedNumber(null)} />
       )}
+    </>
+  );
+};
+
+// Main App with Page Navigation
+function App() {
+  const [currentPage, setCurrentPage] = useState('calculator');
+
+  return (
+    <div className={currentPage === 'calculator' ? 'min-h-screen gradient-mystic relative overflow-hidden' : ''}>
+      {/* Stars background only for calculator page */}
+      {currentPage === 'calculator' && (
+        <div className="stars-bg">
+          {[...Array(50)].map((_, i) => (
+            <div
+              key={i}
+              className="star"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 3}s`
+              }}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Page Navigation */}
+      <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 no-print">
+        <div className="page-selector shadow-2xl">
+          <button
+            className={currentPage === 'calculator' ? 'active' : ''}
+            onClick={() => setCurrentPage('calculator')}
+          >
+            🔢 Calculator
+          </button>
+          <button
+            className={currentPage === 'report' ? 'active' : ''}
+            onClick={() => setCurrentPage('report')}
+          >
+            📋 Report Editor
+          </button>
+        </div>
+      </div>
+
+      {/* Page Content */}
+      {currentPage === 'calculator' && <CalculatorPage />}
+      {currentPage === 'report' && <ReportEditor />}
     </div>
   );
 }

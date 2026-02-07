@@ -117,6 +117,7 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -186,14 +187,27 @@
 
 /* Number animations */
 @keyframes numberPop {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.15); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.15);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
 @keyframes shimmer {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
+  0% {
+    background-position: -200% center;
+  }
+
+  100% {
+    background-position: 200% center;
+  }
 }
 
 @keyframes fadeInUp {
@@ -201,6 +215,7 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -208,9 +223,12 @@
 }
 
 @keyframes pulse-glow {
-  0%, 100% {
+
+  0%,
+  100% {
     box-shadow: 0 0 20px rgba(245, 208, 97, 0.4);
   }
+
   50% {
     box-shadow: 0 0 40px rgba(245, 208, 97, 0.8);
   }
@@ -230,12 +248,10 @@
 
 /* Shimmer effect for loading */
 .shimmer {
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.2) 50%,
-    rgba(255, 255, 255, 0) 100%
-  );
+  background: linear-gradient(90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.2) 50%,
+      rgba(255, 255, 255, 0) 100%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
@@ -294,7 +310,7 @@
 .card-mystic {
   background: rgba(255, 255, 255, 0.95);
   border-radius: 1.25rem;
-  box-shadow: 
+  box-shadow:
     0 10px 40px rgba(26, 16, 51, 0.15),
     0 0 0 1px rgba(139, 92, 246, 0.1);
   transition: all 0.3s ease;
@@ -302,7 +318,7 @@
 
 .card-mystic:hover {
   transform: translateY(-4px);
-  box-shadow: 
+  box-shadow:
     0 20px 60px rgba(26, 16, 51, 0.2),
     0 0 0 1px rgba(139, 92, 246, 0.2);
 }
@@ -401,8 +417,15 @@
 }
 
 @keyframes twinkle {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 0.8; }
+
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
 }
 
 /* Responsive adjustments */
@@ -412,4 +435,107 @@
     height: 2.5rem;
     font-size: 1.25rem;
   }
+}
+
+/* ==============================
+   PRINT STYLES FOR REPORT
+   ============================== */
+
+@media print {
+
+  /* Hide browser headers and footers */
+  @page {
+    margin: 0.5in;
+    size: A4;
+  }
+
+  /* Remove browser-added elements */
+  html,
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body {
+    background: white !important;
+    font-family: Georgia, 'Times New Roman', serif !important;
+  }
+
+  .report-content {
+    padding: 0 !important;
+    font-size: 11pt !important;
+    line-height: 1.5 !important;
+  }
+
+
+  .report-content h1 {
+    font-size: 18pt !important;
+  }
+
+  .report-content h2 {
+    font-size: 14pt !important;
+  }
+
+  .report-content h3 {
+    font-size: 12pt !important;
+  }
+
+  .report-content table {
+    page-break-inside: avoid;
+  }
+
+  .report-content .page-break {
+    page-break-before: always;
+  }
+
+  /* Hide non-printable elements */
+  .no-print {
+    display: none !important;
+  }
+
+  /* Ensure colors print */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  /* Border styling for print */
+  .report-content .border-4 {
+    border-width: 3pt !important;
+  }
+
+  .report-content .border-l-4 {
+    border-left-width: 3pt !important;
+  }
+}
+
+/* Page selector for navigation */
+.page-selector {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #1a1033 0%, #2d1f4e 100%);
+  border-radius: 1rem;
+}
+
+.page-selector button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.page-selector button.active {
+  background: linear-gradient(135deg, #f5d061 0%, #d4a84b 100%);
+  color: #1a1033;
+}
+
+.page-selector button:not(.active) {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.page-selector button:not(.active):hover {
+  background: rgba(255, 255, 255, 0.2);
 }
